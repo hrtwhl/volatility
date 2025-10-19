@@ -5,6 +5,9 @@ library(stringr)
 library(purrr)
 
 install.packages("httpgd")
+library(httpgd)
+httpgd::hgd()
+
 
 
 # === Deine korrekten VIX-Futures-Verfallstermine ===
@@ -164,6 +167,7 @@ ggplot(vix1_series, aes(x = date, y = vix1)) +
   geom_line(color = "darkblue") +
   labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) +
   theme_minimal()
+
 
 library(quantmod)
 
