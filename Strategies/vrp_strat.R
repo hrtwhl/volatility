@@ -4,6 +4,9 @@ library(lubridate)
 library(stringr)
 library(purrr)
 
+install.packages("httpgd")
+
+
 # === Deine korrekten VIX-Futures-Verfallstermine ===
 expiration_dates <- as.Date(c(
   "2006-01-18", "2006-02-15", "2006-03-22", "2006-04-19", "2006-05-17", "2006-06-21",
@@ -45,7 +48,9 @@ expiration_dates <- as.Date(c(
   "2024-01-17", "2024-02-14", "2024-03-20", "2024-04-17", "2024-05-22", "2024-06-18",
   "2024-07-17", "2024-08-21", "2024-09-18", "2024-10-16", "2024-11-20", "2024-12-18",
   "2025-01-22", "2025-02-19", "2025-03-18", "2025-04-16", "2025-05-21", "2025-06-18",
-  "2025-07-16", "2025-08-20", "2025-09-17", "2025-10-22", "2025-11-19", "2025-12-17"
+  "2025-07-16", "2025-08-20", "2025-09-17", "2025-10-22", "2025-11-19", "2025-12-17",
+  "2026-01-21", "2026-02-18", "2026-03-18", "2026-04-15", "2026-05-19", "2026-06-17",
+  "2026-07-22", "2026-08-19", "2026-09-16", "2026-10-21", "2026-11-18", "2026-12-16"
 ))
 
 
@@ -74,9 +79,9 @@ parse_date_robust <- function(x) {
 load_vix_csv <- function(file) {
   tryCatch({
     filename <- basename(file)
-    
+
     is_old_format <- str_detect(filename, "^CFE_")
-    
+
     # Kontraktinformationen aus Dateinamen extrahieren
     if (is_old_format) {
       parts <- str_match(filename, "CFE_([A-Z])([0-9]{2})_VX\\.csv")[, 2:3]
@@ -89,14 +94,14 @@ load_vix_csv <- function(file) {
       month <- month(contract_date)
       year <- year(contract_date)
     }
-    
+
     df <- read_csv(file, show_col_types = FALSE)
-    
+
     date_col <- names(df)[str_detect(names(df), "Date|TradeDate|date")][1]
     price_col <- names(df)[str_detect(names(df), "Settle|Settlement|Price|Close")][1]
-    
+
     if (is.null(date_col) || is.null(price_col)) stop("Datum oder Preis nicht gefunden.")
-    
+
     df <- df %>%
       rename(date_raw = !!sym(date_col), price_raw = !!sym(price_col)) %>%
       mutate(
@@ -114,9 +119,9 @@ load_vix_csv <- function(file) {
       ) %>%
       select(date, contract, price, days_to_settlement, settlement_date, source_file) %>%
       filter(!is.na(date), !is.na(price), !is.na(settlement_date))
-    
+
     return(df)
-    
+
   }, error = function(e) {
     message("❌ Fehler in Datei: ", file, "\n", e$message)
     return(NULL)
@@ -157,7 +162,7 @@ library(ggplot2)
 
 ggplot(vix1_series, aes(x = date, y = vix1)) +
   geom_line(color = "darkblue") +
-  labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) + 
+  labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) +
   theme_minimal()
 
 library(quantmod)
@@ -276,25 +281,24 @@ ggplot() +
   labs(title = "VRP-Strategie (SVXY/VIXY) vs. SPY",
        y = "Wertentwicklung (Start = 1)", x = NULL, color = NULL) +
   theme_minimal()
-  
-  
-  
+
+
+
   View(strategy_returns)
-  
+
   # ETF-Renditen
   etf_returns <- etf_prices %>%
     group_by(ticker) %>%
     arrange(date) %>%
     mutate(ret = price / lag(price) - 1) %>%
     ungroup()
-  
+
   # Strategie nur wenn Signal = Ticker
   strategy_data <- etf_returns %>%
     inner_join(vrp_signal, by = "date") %>%
     filter(ticker == signal)
-  
+
   strategy_returns <- strategy_data %>%
     arrange(date) %>%
     mutate(strat_return = replace_na(ret, 0),
            strat_value = cumprod(1 + strat_return))
-  
