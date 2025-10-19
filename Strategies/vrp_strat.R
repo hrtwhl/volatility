@@ -4,13 +4,6 @@ library(lubridate)
 library(stringr)
 library(purrr)
 
-#remotes::install_github("nx10/httpgd")
-library(ggplot2)
-dev.cur()
-p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
-
-print(p)   # wichtig in VS Code!
-
 
 
 
@@ -162,21 +155,9 @@ vix1_series <- vix_futures_clean %>%
   filter(!is.na(vix1), t1 < t2, between(t1, 10, 60), between(t2, 15, 90)) %>%
   distinct(date, .keep_all = TRUE)
 
-
-
-
 library(ggplot2)
 
-# einmal vor dem Plotten
-quartz(width = 10, height = 6)  # Zoll; passe an (z.B. 12x7)
-
 # dann dein Plot
-p <- ggplot(vix1_series, aes(date, vix1)) +
-  geom_line(color = "darkblue") +
-  labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) +
-  theme_minimal()
-
-print(p)
 ggplot(vix1_series, aes(x = date, y = vix1)) +
   geom_line(color = "darkblue") +
   labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) +
@@ -197,6 +178,8 @@ ggplot(vix1_vs_spot, aes(x = date)) +
   geom_line(aes(y = vix1, color = "VIX1 (Futures)"), size= 0.8) +
   labs(title = "VIX1 vs VIX Spot", y = "Vola", color = NULL) +
   theme_minimal()
+
+
 
 #--------------------------------------------------------------------
 
@@ -260,6 +243,8 @@ etf_prices <- bind_rows(
 library(dplyr)
 library(quantmod)
 library(ggplot2)
+library(tidyr)
+
 
 # Berechne tägliche Renditen je ETF
 etf_returns <- etf_prices %>%
