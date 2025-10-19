@@ -4,9 +4,13 @@ library(lubridate)
 library(stringr)
 library(purrr)
 
-install.packages("httpgd")
-library(httpgd)
-httpgd::hgd()
+#remotes::install_github("nx10/httpgd")
+library(ggplot2)
+dev.cur()
+p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+
+print(p)   # wichtig in VS Code!
+
 
 
 
@@ -163,6 +167,16 @@ vix1_series <- vix_futures_clean %>%
 
 library(ggplot2)
 
+# einmal vor dem Plotten
+quartz(width = 10, height = 6)  # Zoll; passe an (z.B. 12x7)
+
+# dann dein Plot
+p <- ggplot(vix1_series, aes(date, vix1)) +
+  geom_line(color = "darkblue") +
+  labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) +
+  theme_minimal()
+
+print(p)
 ggplot(vix1_series, aes(x = date, y = vix1)) +
   geom_line(color = "darkblue") +
   labs(title = "VIX1 (30-Tage gewichtete VIX-Futures)", y = "VIX1", x = NULL) +
