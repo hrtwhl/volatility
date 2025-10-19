@@ -3,7 +3,8 @@ library(purrr)
 library(fs)
 
 # Zielordner erstellen
-dir_create("data/vix_futures")
+dir_create("vix_futures/")
+
 
 # 1. Kontrakte 2004–2012 (Archiv-Format)
 month_codes <- c("F", "G", "H", "J", "K", "M", "N", "Q", "U", "V", "X", "Z")
