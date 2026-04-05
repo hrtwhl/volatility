@@ -7,7 +7,7 @@ dir_create("data/vix_futures/")
 
 # 1. Kontrakte 2004–2012 (Archiv-Format)
 month_codes <- c("F", "G", "H", "J", "K", "M", "N", "Q", "U", "V", "X", "Z")
-years_old <- 2006:2012
+years_old <- 2004:2012
 contracts_old <- expand.grid(code = month_codes, year = years_old)
 old_files <- paste0("CFE_", contracts_old$code, substr(contracts_old$year, 3, 4), "_VX.csv")
 old_urls <- paste0("https://cdn.cboe.com/resources/futures/archive/volume-and-price/", old_files)
@@ -57,7 +57,7 @@ download_csv <- function(url, file_name) {
 walk2(all_urls, all_files, download_csv)
 
 
-glimpse(vix_futures_clean)
+
 
 
 
