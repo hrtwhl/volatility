@@ -7,7 +7,7 @@ dir_create("data/vix_futures/")
 
 # 1. Kontrakte 2004–2012 (Archiv-Format)
 month_codes <- c("F", "G", "H", "J", "K", "M", "N", "Q", "U", "V", "X", "Z")
-years_old <- 2004:2012
+years_old <- 2007:2012
 contracts_old <- expand.grid(code = month_codes, year = years_old)
 old_files <- paste0("CFE_", contracts_old$code, substr(contracts_old$year, 3, 4), "_VX.csv")
 old_urls <- paste0("https://cdn.cboe.com/resources/futures/archive/volume-and-price/", old_files)
@@ -56,7 +56,21 @@ download_csv <- function(url, file_name) {
 # 5. Alle Dateien herunterladen
 walk2(all_urls, all_files, download_csv)
 
+# 6. VIX Spot-Daten herunterladen
+spot_url <- "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv"
+spot_dest <- path("data", "VIX_History.csv")
 
+try({
+  resp <- GET(spot_url)
+  if (status_code(resp) == 200) {
+    writeBin(content(resp, "raw"), spot_dest)
+    message("✅ Downloaded: VIX_History.csv (Spot)")
+  } else {
+    message("⚠️ Not available: VIX_History.csv (Spot)")
+  }
+}, silent = TRUE)
+
+message("================== All downloads completed. Files saved. ==================")
 
 
 
