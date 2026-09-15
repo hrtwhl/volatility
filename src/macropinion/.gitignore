@@ -1,0 +1,13 @@
+.env
+data/*.duckdb
+data/*.duckdb.wal
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+site/node_modules/
+site/dist/
+site/.observablehq/cache/
+.DS_Store

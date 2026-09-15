@@ -1,0 +1,238 @@
+@import url("observablehq:default.css");
+
+:root {
+  /* Supplied palette */
+  --ink: #05161a;
+  --paper: #f0f0f0;
+  --rose-deep: #da4167;
+  --rose: #ff6978;
+  --amber: #ff9b42;
+  --mint: #45b69c;
+  --blue-deep: #087ca7;
+  --blue: #2892d7;
+  --periwinkle: #7494ea;
+
+  /* Neutrals derived off the ink hue so nothing drifts grey-blue against it */
+  --panel: #0a2028;
+  --panel-raised: #0e2933;
+  --hairline: #16323c;
+  --muted: #8fa3aa;
+
+  --serif: "Archivo", system-ui, sans-serif;
+  --sans-serif: "Archivo", system-ui, sans-serif;
+  --monospace: "Archivo", system-ui, sans-serif;
+
+  --theme-foreground: var(--paper);
+  --theme-foreground-muted: var(--muted);
+  --theme-foreground-faint: #5c7078;
+  --theme-foreground-fainter: var(--hairline);
+  --theme-foreground-focus: var(--blue);
+  --theme-background: var(--ink);
+  --theme-background-alt: var(--panel);
+}
+
+html {
+  background: var(--ink);
+}
+
+body {
+  font-family: var(--sans-serif);
+  font-feature-settings: "tnum" 1, "cv05" 1;
+  color: var(--paper);
+}
+
+/* Numbers must not shimmer between rebuilds. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--sans-serif);
+  font-weight: 600;
+  letter-spacing: -0.011em;
+  color: var(--paper);
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 0 0 0.15rem;
+}
+
+/* Page standfirst: what the chart is for, not what it is called. */
+.standfirst {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  max-width: 62ch;
+  margin: 0 0 1.75rem;
+}
+
+/* Current readings strip. Three quiet values, not a hero number. */
+.readings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.25rem;
+  padding: 0 0 1.25rem;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 1.5rem;
+}
+
+.reading-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+  margin-bottom: 0.3rem;
+}
+
+.reading-value {
+  font-size: 1.6rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.reading-date {
+  font-size: 0.75rem;
+  color: var(--theme-foreground-faint);
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.3rem;
+}
+
+/* The swatch carries the series-to-line mapping, so the chart needs no legend. */
+.reading-swatch {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.1875rem;
+  border-radius: 1px;
+  vertical-align: 0.22em;
+  margin-right: 0.4rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 1.25rem 1.25rem 0.75rem;
+}
+
+/* Freshness note. Macro data is stale by nature; say how stale. */
+.asof {
+  font-size: 0.75rem;
+  color: var(--theme-foreground-faint);
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.9rem;
+}
+
+.asof.stale {
+  color: var(--amber);
+}
+
+/* Range control */
+.range-control {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.range-control button {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.range-control button:hover {
+  color: var(--paper);
+  border-color: var(--theme-foreground-faint);
+}
+
+.range-control button[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+.range-control button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Top navigation, in place of Framework's sidebar. */
+#observablehq-header {
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 2rem;
+}
+
+.topnav {
+  display: flex;
+  align-items: baseline;
+  gap: 2rem;
+  padding: 0.85rem 0;
+}
+
+.topnav-brand {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.topnav-links {
+  display: flex;
+  gap: 1.35rem;
+}
+
+/* The underline marks the section you are in — it encodes position, so it is
+   applied to the current link only, never as a hover decoration. */
+.topnav-links a {
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding-bottom: 0.85rem;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s;
+}
+
+.topnav-links a:hover {
+  color: var(--paper);
+}
+
+.topnav-links a[aria-current="page"] {
+  color: var(--paper);
+  border-bottom-color: var(--rose);
+}
+
+.topnav-links a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* Without a sidebar the content would run the full window width, which is too
+   wide to read. Cap it and centre. */
+#observablehq-center {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .topnav {
+    gap: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
